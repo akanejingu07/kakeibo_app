@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>家計簿アプリ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>家計簿</h1>
+
+  <!-- 入力フォーム -->
+  <section class="form-area">
+    <h2>入力</h2>
+    <form method="post">
+      <div>
+        <label>日付</label>
+        <input type="date" name="date" required>
+      </div>
+
+      <div>
+        <label>種類</label>
+        <label><input type="radio" name="type" value="expense" checked> 支出</label>
+        <label><input type="radio" name="type" value="income"> 収入</label>
+      </div>
+
+      <div>
+        <label>カテゴリ</label>
+        <select name="category" required>
+          <option value="食費">食費</option>
+          <option value="交通費">交通費</option>
+          <option value="日用品">日用品</option>
+          <option value="娯楽">娯楽</option>
+          <option value="給料">給料</option>
+        </select>
+      </div>
+
+      <div>
+        <label>金額</label>
+        <input type="number" name="amount" required>
+      </div>
+
+      <div>
+        <label>メモ</label>
+        <input type="text" name="memo">
+      </div>
+
+      <button type="submit">保存</button>
+    </form>
+  </section>
+
+  <!-- 一覧表示 -->
+  <section class="list-area">
+    <h2>一覧</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>日付</th>
+          <th>種類</th>
+          <th>カテゴリ</th>
+          <th>金額</th>
+          <th>メモ</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in records %}
+        <tr class="{{ r.type }}">
+          <td data-label="日付">{{ r.date }}</td>
+          <td data-label="種類">{{ '収入' if r.type == 'income' else '支出' }}</td>
+          <td data-label="カテゴリ">{{ r.category }}</td>
+          <td data-label="金額">{{ r.amount }} 円</td>
+          <td data-label="メモ">{{ r.memo }}</td>
+          <td data-label="操作">
+            <form action="{{ url_for('delete') }}" method="post">
+              <input type="hidden" name="record_id" value="{{ r.id }}">
+              <button type="submit">削除</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+</body>
+</html>
